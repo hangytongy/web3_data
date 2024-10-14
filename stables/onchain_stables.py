@@ -40,3 +40,13 @@ df_change = df[['name','symbol','circulatingPrevDay_change','circulatingPrevWeek
 df_change_top10 = df_change[0:9]
 
 print(df_change_top10)
+
+# Plotting the DataFrame
+fig, ax = plt.subplots(figsize=(5, 2))  # Adjust the size as needed
+ax.axis('tight')
+ax.axis('off')
+table_data = ax.table(cellText=df_change_top10.values, colLabels=df_change_top10.columns, cellLoc='center', loc='center')
+
+# Save the figure
+plt.savefig('dataframe.png', bbox_inches='tight', dpi=300)
+plt.close()

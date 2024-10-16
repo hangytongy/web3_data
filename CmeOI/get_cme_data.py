@@ -14,4 +14,6 @@ def query_data(token):
     df['difference'] = df['difference'].astype('int64')
     df['difference'] = df['difference'].apply(lambda x: f"{x:,}")
 
+    df = df.iloc[1:].reset_index(drop=True)
+
     return df

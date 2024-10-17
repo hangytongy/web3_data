@@ -79,7 +79,7 @@ for moving_average in moving_averages:
     num_above_ma_percentage = (num_above_ma / len(tmp_price_history.columns)) * 100
     
     #percentage ma is below 93%
-    upper_threshold = 7
+    upper_threshold = 6
     
     bottom_ma = num_above_ma_percentage[num_above_ma_percentage < upper_threshold]
     bottom_ma = -bottom_ma
@@ -101,7 +101,7 @@ for moving_average in moving_averages:
     fig, ax1 = plt.subplots(figsize=(14, 7))
 
     # Plot the percentage of tickers above the 50-day moving average
-    ax1.bar(num_above_ma_percentage.index, num_above_ma_percentage,width = 0.6,alpha=0.7,label="Percentage of Tickers above MA")
+    ax1.bar(num_above_ma_percentage.index, num_above_ma_percentage,width = 0.6,alpha=0.5,label="Percentage of Tickers above MA")
     ax1.bar(bottom_ma.index, bottom_ma, width = 0.6, color = 'green')
     ax1.bar(top_ma.index, top_ma, width = 0.6, color = 'red')
 

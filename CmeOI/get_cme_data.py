@@ -46,5 +46,6 @@ def cme_data(token):
     df_final = combine_df(df_dollar,df_coin)
 
     df_final['value'] = df_final['value'].astype(int)
+    df_final['time'] = df_final['time'].dt.date
 
     return df_final

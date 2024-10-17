@@ -45,4 +45,6 @@ def cme_data(token):
     df_coin = query_data_coin(token)
     df_final = combine_df(df_dollar,df_coin)
 
+    df_final['value'] = df_final['value'].astype(int)
+
     return df_final

@@ -1,0 +1,7 @@
+tqdm
+ccxt
+pandas
+requests
+matplotlib
+dotenv
+subprocess

@@ -34,7 +34,7 @@ def plotting_dump(df_merge,dump,token,data_directory):
     ax1_twin = ax1.twinx()
     ax1_twin.bar(dump['time'], dump['open_interest_change_%'], color = 'red', label = 'IO change %', width = 0.02)
     ax1_twin.set_ylabel('% change', fontsize = 14)
-    ax1_twin.set_ylabel('Delta price to IO', color='r', fontsize = 14)
+    ax1_twin.set_ylabel('Open interest % change', color='r', fontsize = 14)
     ax1_twin.tick_params(axis='y', labelcolor='r', labelsize = 14)
 
     ax1.legend(loc='upper left')

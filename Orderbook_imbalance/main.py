@@ -48,7 +48,7 @@ def save_result_to_csv(ticker, result, is_daily_average=False, avg_date=None):
             writer.writerow(['Timestamp', 'Bid Ask Ratio'])
         writer.writerow([timestamp, bid_ask_ratio])
 
-def calculate_daily_averages(day):
+def calculate_daily_averages(day): #this function is redundant 
     day_str = day.strftime('%Y-%m-%d')
     for ticker in tickers:
         filename = os.path.join(os.getcwd(), "data", f"{ticker}_data.csv")

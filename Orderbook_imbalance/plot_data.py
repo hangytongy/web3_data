@@ -4,29 +4,22 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from binance.client import Client
 from datetime import datetime, timedelta
+from get_daily_average import calculate_daily_averages
 
 def get_average_data():
+    calculate_daily_averages()  # Ensure daily averages are up to date
     data_folder = os.path.join(os.getcwd(), "data")
     tickers = ['BTC', 'ETH', 'SOL']
     all_data = {}
 
     for ticker in tickers:
-        filename = os.path.join(data_folder, f"{ticker}USDT_data.csv")
+        filename = os.path.join(data_folder, f"{ticker}USDT_daily_average.csv")
         if os.path.exists(filename):
-            with open(filename, 'r') as csvfile:
-                reader = csv.reader(csvfile)
-                next(reader)  # Skip header
-                average_data = [row for row in reader if 'AVERAGE' in row[0]]
-            
-            if average_data:
-                df = pd.DataFrame(average_data, columns=['Timestamp', 'Bid Ask Ratio'])
-                df['Timestamp'] = pd.to_datetime(df['Timestamp'].str.split().str[0])
-                df['Bid Ask Ratio'] = df['Bid Ask Ratio'].astype(float)
-                all_data[ticker] = df
-            else:
-                print(f"No average data found for {ticker}")
+            df = pd.read_csv(filename, names=['Timestamp', 'Bid Ask Ratio'], parse_dates=['Timestamp'])
+            df['Bid Ask Ratio'] = df['Bid Ask Ratio'].astype(float)
+            all_data[ticker] = df
         else:
-            print(f"No data file found for {ticker}")
+            print(f"No daily average file found for {ticker}")
 
     return all_data
 

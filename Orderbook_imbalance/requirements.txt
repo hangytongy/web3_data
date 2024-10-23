@@ -3,4 +3,3 @@ statistics
 python-binance
 pandas
 matplotlib
-

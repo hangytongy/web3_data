@@ -70,7 +70,7 @@ def calculate_daily_averages(day): #this function is redundant
 
 if __name__ == "__main__":
     print("Starting the application...")
-    if last_processed_date is None:
-        last_processed_date = date.today()
+    if last_processed_date is None: #redundant
+        last_processed_date = date.today() # redundant 
     run_app(tickers, percentage)
     print("Application run completed.")

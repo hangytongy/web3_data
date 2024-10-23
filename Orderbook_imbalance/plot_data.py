@@ -32,35 +32,45 @@ def get_price_data(symbol, start_date):
     return df[['timestamp', 'close']]
 
 def plot_data(all_data):
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12), sharex=True)
-        
-    # Plot Bid-Ask Ratio
-    for ticker, df in all_data.items():
-        ax1.plot(df['Timestamp'], df['Bid Ask Ratio'], label=f'{ticker} Bid-Ask Ratio')
-        
-    ax1.set_title('Average Bid-Ask Ratio Over Time')
-    ax1.set_ylabel('Bid-Ask Ratio')
-    ax1.legend()
-    ax1.grid(True)
-        
-    # Get and plot price data
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(12, 18), sharex=True)
+    axes = [ax1, ax2, ax3]
+    
     start_date = min(df['Timestamp'].min() for df in all_data.values()).strftime("%d %b, %Y")
-    for ticker in all_data.keys():
+    
+    for i, (ticker, df) in enumerate(all_data.items()):
+        ax = axes[i]
+        ax2 = ax.twinx()
+        
+        # Plot Price data
         symbol = f'{ticker}USDT'
         price_data = get_price_data(symbol, start_date)
-        ax2.plot(price_data['timestamp'], price_data['close'], label=f'{ticker} Price')
+        ax.plot(price_data['timestamp'], price_data['close'], label=f'{ticker} Price', color='blue')
         
-    ax2.set_title('Price Over Time')
-    ax2.set_xlabel('Date')
-    ax2.set_ylabel('Price (USDT)')
-    ax2.legend()
-    ax2.grid(True)
+        # Plot Bid-Ask Ratio
+        ax2.bar(df['Timestamp'], df['Bid Ask Ratio'], label=f'{ticker} Bid-Ask Ratio', color='red', alpha=0.5, width=1)
         
+        ax.set_title(f'{ticker} Price and Bid-Ask Ratio Over Time')
+        ax.set_ylabel('Price (USDT)', color='blue')
+        ax2.set_ylabel('Bid-Ask Ratio', color='red')
+        
+        ax.tick_params(axis='y', labelcolor='blue')
+        ax2.tick_params(axis='y', labelcolor='red')
+        
+        ax.grid(True)
+        
+        # Combine legends
+        lines1, labels1 = ax.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        ax.legend(lines1 + lines2, labels1 + labels2, loc='upper left')
+    
+    plt.xlabel('Date')
+    
     # Rotate and align the tick labels so they look better
     plt.gcf().autofmt_xdate()
-        
-    # Save the plot
-    plt.savefig('bid_ask_ratio_and_price.png')
+    
+    # Adjust layout and save the plot
+    plt.tight_layout()
+    plt.savefig('price_and_bid_ask_ratio.png')
     plt.close()
 
 # Call the function to plot the data

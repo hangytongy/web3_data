@@ -19,15 +19,15 @@ def calculate_daily_averages():
                     date, avg = line.strip().split(',')
                     existing_averages[date] = float(avg)
 
-        # Remove today's date from existing averages if present
-        today = datetime.now().strftime('%Y-%m-%d')
-        if today in existing_averages:
-            del existing_averages[today]
-            
-        # Rewrite the output file with updated existing averages
-        with open(output_file, 'w') as f:
-            for date, avg in existing_averages.items():
-                f.write(f"{date},{avg:.2f}\n")
+            # Remove today's date from existing averages if present
+            today = datetime.now().strftime('%Y-%m-%d')
+            if today in existing_averages:
+                del existing_averages[today]
+                
+            # Rewrite the output file with updated existing averages
+            with open(output_file, 'w') as f:
+                for date, avg in existing_averages.items():
+                    f.write(f"{date},{avg:.2f}\n")
                 
         # Calculate new averages
         new_averages = {}

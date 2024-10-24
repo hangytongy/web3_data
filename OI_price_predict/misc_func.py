@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 from get_oi_data import init_client
+from datetime import datetime, timedelta
 
 
 def get_colors(df):
@@ -53,4 +54,30 @@ def get_top_100_tokens_by_volume():
     else:
         print(f"Failed to fetch data from Binance. Status code: {response.status_code}")
         return []
+
+def loss_function(dump,df_merge,token):
+    #get predicted dump row - time and close
+    score = 0
+    for row in dump.index:
+        dump_time = dump.loc[row, 'time']
+        dump_close = dump.loc[row, 'Close']
+        
+        #from predicted dump time and close, get the data for the next 2 days from df_merge
+        dump_time_end = dump_time + timedelta(days=2)
+        cond1 = df_merge['time'] >= dump_time
+        cond2 = df_merge['time'] <= dump_time_end
+        df_frame = df_merge[cond1 & cond2]
+        
+        # if at any instance, df_merge Close is lower than dump Close, score + 1
+        df_frame = df_frame.copy()
+        df_frame.loc[:, 'score'] = df_frame['Close'].apply(lambda x: 1 if x < dump_close else 0)
+        scoring = df_frame['score'].sum()
+        
+        if scoring > 0:
+            score += 1
+    # get average of scores to get accuracy rate for the token
+    accuracy = round(score/len(dump) * 100,2)
+    #return accuracy rate for that token
+    print(f"accurary for {token} is {accuracy}%")
+    return accuracy
 

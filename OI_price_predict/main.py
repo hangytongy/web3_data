@@ -1,5 +1,6 @@
 from get_oi_data import init_client, open_interest, get_exchanges, get_price_history
 import post_telegram
+import misc_func
 
 import pandas as pd
 import numpy as np 
@@ -45,6 +46,8 @@ def run_main(days,token,interval):
 
         dump = dump_data.get_dump_data(OI_lim,df_merge)
 
+        accuracy = misc_func.loss_function(dump,df_merge,token)
+
         directory = os.getcwd()
         data_directory = os.path.join(directory,'data')
         if not os.path.exists(data_directory):
@@ -60,7 +63,7 @@ def run_main(days,token,interval):
             if dump_last_row_time > onehour_before_current:
                 print(dump.iloc[-1])
                 token_chart_directory = dump_data.plotting_dump(df_merge, dump, token, data_directory)
-                post_telegram.send_photo_telegram(token_chart_directory, f"{token} possible DUMP \n{dump.iloc[-1]}")
+                post_telegram.send_photo_telegram(token_chart_directory, f"{token} possible DUMP \nPast 30 days accurary = {accuracy}%\n{dump.iloc[-1]}")
     except Exception as e:
         print(e)
 

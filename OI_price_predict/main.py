@@ -46,7 +46,8 @@ def run_main(days,token,interval):
 
         dump = dump_data.get_dump_data(OI_lim,df_merge)
 
-        accuracy = misc_func.loss_function(dump,df_merge,token)
+        accuracy_1 = misc_func.loss_function(dump,df_merge,token,1)
+        accuracy_2 = misc_func.loss_function(dump,df_merge,token,2)
 
         directory = os.getcwd()
         data_directory = os.path.join(directory,'data')
@@ -63,7 +64,7 @@ def run_main(days,token,interval):
             if dump_last_row_time > onehour_before_current:
                 print(dump.iloc[-1])
                 token_chart_directory = dump_data.plotting_dump(df_merge, dump, token, data_directory)
-                post_telegram.send_photo_telegram(token_chart_directory, f"{token} possible DUMP \nPast 30 days accurary = {accuracy}%\n{dump.iloc[-1]}")
+                post_telegram.send_photo_telegram(token_chart_directory, f"{token} possible DUMP \n2 Days Frame accuracy = {accuracy_1}%\n1 Day Frame accuracy = {accuracy_2}%\n{dump.iloc[-1]}")
     except Exception as e:
         print(e)
 

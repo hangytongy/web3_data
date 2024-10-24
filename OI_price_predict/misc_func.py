@@ -62,7 +62,7 @@ def loss_function(dump,df_merge,token,days):
         dump_time = dump.loc[row, 'time']
         dump_close = dump.loc[row, 'Close']
         
-        #from predicted dump time and close, get the data for the next 2 days from df_merge
+        #from predicted dump time and close, get the data for the next X days from df_merge
         dump_time_end = dump_time + timedelta(days=days)
         cond1 = df_merge['time'] >= dump_time
         cond2 = df_merge['time'] <= dump_time_end

@@ -64,7 +64,7 @@ def run_main(days,token,interval):
             if dump_last_row_time > onehour_before_current:
                 print(dump.iloc[-1])
                 token_chart_directory = dump_data.plotting_dump(df_merge, dump, token, data_directory)
-                post_telegram.send_photo_telegram(token_chart_directory, f"{token} possible DUMP \n2 Days Frame accuracy = {accuracy_1}%\n1 Day Frame accuracy = {accuracy_2}%\n{dump.iloc[-1]}")
+                post_telegram.send_photo_telegram(token_chart_directory, f"{token} possible DUMP \n1 Day Frame accuracy = {accuracy_1}%\n2 Days Frame accuracy = {accuracy_2}%\n{dump.iloc[-1]}")
     except Exception as e:
         print(e)
 

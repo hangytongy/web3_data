@@ -48,7 +48,7 @@ def run_main(days,token,interval):
         print(ratio_lim)
 
         token_chart_directory = dump_data.plotting_dump(df_merge, token, data_directory,ratio_lim)
-        #post_telegram.send_photo_telegram(token_chart_directory, f"{token} OI chart 1h interval")
+        post_telegram.send_photo_telegram(token_chart_directory, f"{token} OI chart 1h interval")
     except Exception as e:
         print(e)
 

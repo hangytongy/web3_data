@@ -15,13 +15,16 @@ def get_dump_data(OI_lim,df_merge):
     else:
         return pd.DataFrame()
 
-def plotting_dump(df_merge,token,data_directory):
+def plotting_dump(df_merge,token,data_directory,ratio_lim):
 #plots on intra interval
     token_chart_directory = os.path.join(data_directory,f"{token}.png")
 
     colors_ratio,colors_OI = get_colors(df_merge)
 
     fig, (ax1,ax2) = plt.subplots(nrows=2, ncols = 1, figsize=(20, 14))
+
+    y_lim_upper = ratio_lim
+    y_lim_lower = -ratio_lim
 
     #plot 1
 
@@ -53,7 +56,7 @@ def plotting_dump(df_merge,token,data_directory):
     ax2_twin.set_xlabel('Date', fontsize = 14)
     ax2_twin.set_ylabel('Delta price to IO', color='r', fontsize = 14)
     ax2_twin.tick_params(axis='y', labelcolor='r', labelsize = 14)
-    ax2_twin.set_ylim(-100,100)
+    ax2_twin.set_ylim(y_lim_lower,y_lim_upper)
 
     ax2.legend(loc='best')
     ax2_twin.legend(loc='best')

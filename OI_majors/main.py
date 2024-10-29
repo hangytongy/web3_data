@@ -41,9 +41,14 @@ def run_main(days,token,interval):
             os.makedirs(data_directory)
         token_path = os.path.join(data_directory,f'{token}.csv')
 
+        ratio = df_merge['Ratio'].apply(lambda x : abs(x))
+        ratio = ratio[1:]
+        ratio_lim = np.percentile(ratio,95)
 
-        token_chart_directory = dump_data.plotting_dump(df_merge, token, data_directory)
-        post_telegram.send_photo_telegram(token_chart_directory, f"{token} OI chart 1h interval")
+        print(ratio_lim)
+
+        token_chart_directory = dump_data.plotting_dump(df_merge, token, data_directory,ratio_lim)
+        #post_telegram.send_photo_telegram(token_chart_directory, f"{token} OI chart 1h interval")
     except Exception as e:
         print(e)
 

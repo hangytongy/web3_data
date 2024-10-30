@@ -7,7 +7,7 @@ import os
 current_dir = os.getcwd()
 init_bot_dir = os.path.join(current_dir,"init_bot.png")
 
-#post_telegram.send_photo_telegram(init_bot_dir, f"Initialize OI price prediction bot")
+post_telegram.send_photo_telegram(init_bot_dir, f"Initialize OI price prediction bot")
 
 days = 30
 interval = '1h'  #hour = h, day = d, min = m : hyperparam

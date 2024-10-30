@@ -45,12 +45,12 @@ def run_main(days,token,interval,upper_percentile,max_ratio):
         dump = dump_data.get_dump_data(OI_lim,df_merge,max_ratio)
 
         #minimum % change in price to consider for accuracy
-        min_perc_change = 0.5
+        min_perc_change = 0.25
 
         #calculate accuracy
-        accuracy_1 = misc_func.loss_function(dump,df_merge,min_perc_change,token,1,'day')
-        accuracy_2 = misc_func.loss_function(dump,df_merge,min_perc_change,token,8,'hour')
-        accuracy_3 = misc_func.loss_function(dump,df_merge,min_perc_change,token,4,'hour')
+        accuracy_1 = misc_func.loss_function(dump,df_merge,token,min_perc_change,1,'day')
+        accuracy_2 = misc_func.loss_function(dump,df_merge,token,min_perc_change,8,'hour')
+        accuracy_3 = misc_func.loss_function(dump,df_merge,token,min_perc_change,4,'hour')
 
         directory = os.getcwd()
         data_directory = os.path.join(directory,'data')

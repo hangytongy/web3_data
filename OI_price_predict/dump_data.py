@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 from misc_func import get_colors
 import os
 
-def get_dump_data(OI_lim,df_merge):
+def get_dump_data(OI_lim,df_merge,max_ratio):
 
     if OI_lim is not None:
         OI_upper_lim = OI_lim
         cond_1 = df_merge['open_interest_change_%'] > OI_upper_lim
-        cond_2 = (df_merge['Ratio'] < 1) & (df_merge['Ratio'] > -0.1)
+        cond_2 = (df_merge['Ratio'] < max_ratio) & (df_merge['Ratio'] > -0.1)
         dump = df_merge[cond_1 & cond_2]
 
         return dump 

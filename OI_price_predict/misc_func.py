@@ -55,15 +55,19 @@ def get_top_100_tokens_by_volume():
         print(f"Failed to fetch data from Binance. Status code: {response.status_code}")
         return []
 
-def loss_function(dump,df_merge,token,days):
+def loss_function(dump,df_merge,token,min_perc_change,delta_time,time_type):
     #get predicted dump row - time and close
     score = 0
     for row in dump.index:
         dump_time = dump.loc[row, 'time']
         dump_close = dump.loc[row, 'Close']
+        dump_close = dump_close * min_perc_change / 100 
         
         #from predicted dump time and close, get the data for the next X days from df_merge
-        dump_time_end = dump_time + timedelta(days=days)
+        if time_type == 'day':
+            dump_time_end = dump_time + timedelta(days=delta_time)
+        elif time_type == 'hour':
+            dump_time_end = dump_time + timedelta(hours=delta_time)
         cond1 = df_merge['time'] >= dump_time
         cond2 = df_merge['time'] <= dump_time_end
         df_frame = df_merge[cond1 & cond2]

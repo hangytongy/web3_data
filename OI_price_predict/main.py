@@ -8,7 +8,7 @@ import dump_data
 import os
 from datetime import datetime, timedelta
 
-def run_main(days,token,interval):
+def run_main(days,token,interval,upper_percentile,max_ratio):
     current_datetime = datetime.now()
 
     #parameters
@@ -37,17 +37,20 @@ def run_main(days,token,interval):
 
         OI = df_merge['open_interest_change_%'].apply(lambda x : abs(x))
         if OI.size > 0:
-            OI_lim = np.percentile(OI,95)
-            OI_lim_lower = np.percentile(OI,5)
+            OI_lim = np.percentile(OI,upper_percentile)
         else:
             print("OI empty")
             OI_lim = None 
-            OI_lim_lower = None 
 
-        dump = dump_data.get_dump_data(OI_lim,df_merge)
+        dump = dump_data.get_dump_data(OI_lim,df_merge,max_ratio)
 
-        accuracy_1 = misc_func.loss_function(dump,df_merge,token,1)
-        accuracy_2 = misc_func.loss_function(dump,df_merge,token,2)
+        #minimum % change in price to consider for accuracy
+        min_perc_change = 0.5
+
+        #calculate accuracy
+        accuracy_1 = misc_func.loss_function(dump,df_merge,min_perc_change,token,1,'day')
+        accuracy_2 = misc_func.loss_function(dump,df_merge,min_perc_change,token,8,'hour')
+        accuracy_3 = misc_func.loss_function(dump,df_merge,min_perc_change,token,4,'hour')
 
         directory = os.getcwd()
         data_directory = os.path.join(directory,'data')
@@ -64,7 +67,7 @@ def run_main(days,token,interval):
             if dump_last_row_time > onehour_before_current:
                 print(dump.iloc[-1])
                 token_chart_directory = dump_data.plotting_dump(df_merge, dump, token, data_directory)
-                post_telegram.send_photo_telegram(token_chart_directory, f"{token} possible DUMP \n1 Day Frame accuracy = {accuracy_1}%\n2 Days Frame accuracy = {accuracy_2}%\n{dump.iloc[-1]}")
+                post_telegram.send_photo_telegram(token_chart_directory, f"{token} possible DUMP \n1 Day Frame accuracy = {accuracy_1}%\n8 Hour Frame accuracy = {accuracy_2}%\n4 Hour Frame accuracy = {accuracy_3}%\n{dump.iloc[-1]}")
     except Exception as e:
         print(e)
 

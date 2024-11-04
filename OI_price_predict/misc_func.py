@@ -85,3 +85,33 @@ def loss_function(dump,df_merge,token,min_perc_change : float,delta_time,time_ty
     print(f"accurary for {token} is {accuracy}%")
     return accuracy
 
+def loss_function_pump(pump,df_merge,token,min_perc_change : float,delta_time,time_type):
+    #get predicted dump row - time and close
+    score = 0
+    for row in pump.index:
+        pump_time = pump.loc[row, 'time']
+        pump_close = pump.loc[row, 'Close']
+        pump_close = float(pump_close) * (100+min_perc_change) / 100
+        
+        #from predicted dump time and close, get the data for the next X days from df_merge
+        if time_type == 'day':
+            dump_time_end = pump_time + timedelta(days=delta_time)
+        elif time_type == 'hour':
+            dump_time_end = pump_time + timedelta(hours=delta_time)
+        cond1 = df_merge['time'] >= pump_time
+        cond2 = df_merge['time'] <= dump_time_end
+        df_frame = df_merge[cond1 & cond2]
+        
+        # if at any instance, df_merge Close is lower than dump Close, score + 1
+        df_frame = df_frame.copy()
+        df_frame.loc[:, 'score'] = df_frame['Close'].apply(lambda x: 1 if x > pump_close else 0)
+        scoring = df_frame['score'].sum()
+        
+        if scoring > 0:
+            score += 1
+    # get average of scores to get accuracy rate for the token
+    accuracy = round(score/len(pump) * 100,2)
+    #return accuracy rate for that token
+    print(f"accurary for {token} is {accuracy}%")
+    return accuracy
+

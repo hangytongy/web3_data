@@ -12,6 +12,7 @@ def run_plot_data():
     while True:
         subprocess.run(['python', 'plot_data.py'])
         subprocess.run(['python', 'delete_data.py']) #deletes data from 5 days prior to today
+        subprocess.run(['python', 'post_telegram.py'])
         time.sleep(43200)
 
 

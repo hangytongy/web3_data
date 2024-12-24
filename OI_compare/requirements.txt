@@ -1,0 +1,6 @@
+velodata
+pandas
+matplotlib
+numpy
+requests
+seaborn

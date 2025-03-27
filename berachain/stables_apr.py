@@ -6,9 +6,17 @@ import time
 
 def get_apr():
 
-    infrared = "https://infrared.finance/api/vault/beraswap-usdc.e-honey?chainId=80094"
+    infrared = "https://infrared.finance/api/vault/bex-usdc.e-honey-v2?chainId=80094"
     response = requests.get(infrared)
-    infrared_stables_apr = round(response.json()['reward_tokens'][0]['apr']*100,2)
+    infrared_stables_apr = round(response.json()['apr']*100,2)
+
+    infrared_ibera = "https://infrared.finance/api/vault/bex-wbera-ibera?chainId=80094"
+    response = requests.get(infrared_ibera)
+    infrared_ibera = round(response.json()['apr']*100,2)
+
+    infrared_ibgt = "https://infrared.finance/api/vault/kodiak-wbera-ibgt?chainId=80094"
+    response = requests.get(infrared_ibgt)
+    infrared_ibgt = round(response.json()['apr']*100,2)
     
     dolomite = "https://api.dolomite.io/tokens/80094/interest-rates"
     response = requests.get(dolomite)    
@@ -28,7 +36,7 @@ def get_apr():
             dolomite_honey['supply'] = round(float(token['supplyInterestRate'])*100,2)
             dolomite_honey['borrow'] = round(float(token['borrowInterestRate'])*100,2)
 
-    message = f"BERACHAIN APR comparison: \n\nInfrared HONEY/USDC APR : {infrared_stables_apr}% \nDolomite USDC supply APR : {dolomite_usdc['supply']}% \nDolomite USDC borrow APR : {dolomite_usdc['borrow']}% \nDolomite Honey supply APR : {dolomite_honey['supply']}% \nDolomite Honey borrow APR : {dolomite_honey['borrow']}%"
+    message = f"BERACHAIN APR comparison: \n\nInfrared HONEY/USDC APR : {infrared_stables_apr}% \nDolomite USDC supply APR : {dolomite_usdc['supply']}% \nDolomite USDC borrow APR : {dolomite_usdc['borrow']}% \nDolomite Honey supply APR : {dolomite_honey['supply']}% \nDolomite Honey borrow APR : {dolomite_honey['borrow']}% \nBera-iBera apr : {infrared_ibera}% \niBGT apr : {infrared_ibgt}%"
     
     return message
 
@@ -52,5 +60,6 @@ def main():
     post_message(message)
     
 if __name__ == "__main__":
-    main()
-    time.sleep(60*60*24)
+    while True:
+        main()
+        time.sleep(60*60*24)

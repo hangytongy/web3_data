@@ -6,18 +6,25 @@ import time
 
 def get_apr():
 
-    names = ['bex-byusd-honey','kodiak-rusd-honey','kodiak-wbera-ibgt','bex-wbera-ibera']
+    names = ['bex-byusd-honey', 'kodiak-rusd-honey', 'kodiak-wbera-ibgt', 'bex-wbera-ibera']
     infrared = "https://infrared.finance/api/vaults?chainId=80094&show_paused=true&sort_column=tvl"
+    
     response = requests.get(infrared)
-    for i in response.json()['vaults']:
-        if i['id'] == names[0]:
-            infrared_stables_apr = round(i['apr']*100,2)
-        elif i['id'] == names[1]:
-            infrared_rusd = round(i['apr']*100,2)
-        elif i['id'] == names[2]:
-            infrared_ibgt = round(i['apr']*100,2)
-        elif i['id'] == names[3]:
-            infrared_ibera = round(i['apr']*100,2)
+    data = response.json().get('vaults', [])
+    
+    # Dictionary to store results dynamically
+    infrared_aprs = {name: None for name in names}
+    
+    for vault in data:
+        if vault['id'] in infrared_aprs:
+            infrared_aprs[vault['id']] = round(vault['apr'] * 100, 2)
+    
+    # Assign values to variables if needed
+    infrared_stables_apr = infrared_aprs[names[0]]
+    infrared_rusd = infrared_aprs[names[1]]
+    infrared_ibgt = infrared_aprs[names[2]]
+    infrared_ibera = infrared_aprs[names[3]]
+
     
     dolomite = "https://api.dolomite.io/tokens/80094/interest-rates"
     response = requests.get(dolomite)    

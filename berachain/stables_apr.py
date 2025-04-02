@@ -25,6 +25,11 @@ def get_apr():
     infrared_ibgt = infrared_aprs[names[2]]
     infrared_ibera = infrared_aprs[names[3]]
 
+    ibgt_apr = 0
+    for token in response.json()['reward_tokens']:
+        if token['name'] != 'iBGT':
+            ibgt_apr += round(token['apr']*100,2) 
+
     
     dolomite = "https://api.dolomite.io/tokens/80094/interest-rates"
     response = requests.get(dolomite)    
@@ -44,7 +49,7 @@ def get_apr():
             dolomite_honey['supply'] = round(float(token['supplyInterestRate'])*100,2)
             dolomite_honey['borrow'] = round(float(token['borrowInterestRate'])*100,2)
 
-    message = f"BERACHAIN APR comparison: \n\nInfrared HONEY/USDC APR : {infrared_stables_apr}% \nDolomite USDC supply APR : {dolomite_usdc['supply']}% \nDolomite USDC borrow APR : {dolomite_usdc['borrow']}% \nDolomite Honey supply APR : {dolomite_honey['supply']}% \nDolomite Honey borrow APR : {dolomite_honey['borrow']}% \nBera-iBera apr : {infrared_ibera}% \niBGT apr : {infrared_ibgt}% \nrUSD apr : {infrared_rusd}%"
+    message = f"BERACHAIN APR comparison: \n\nInfrared HONEY/USDC APR : {infrared_stables_apr}% \nDolomite USDC supply APR : {dolomite_usdc['supply']}% \nDolomite USDC borrow APR : {dolomite_usdc['borrow']}% \nDolomite Honey supply APR : {dolomite_honey['supply']}% \nDolomite Honey borrow APR : {dolomite_honey['borrow']}% \nBera-iBera apr : {infrared_ibera}% \nBera-iBGT apr : {infrared_ibgt}% \nrUSD apr : {infrared_rusd}% \niBGT apr : {ibgt_apr}%"
     
     return message
 

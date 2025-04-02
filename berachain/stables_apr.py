@@ -25,6 +25,9 @@ def get_apr():
     infrared_ibgt = infrared_aprs[names[2]]
     infrared_ibera = infrared_aprs[names[3]]
 
+    
+    url = "https://infrared.finance/api/vault/infrared-ibgt?chainId=80094"
+    response = requests.get(url)
     ibgt_apr = 0
     for token in response.json()['reward_tokens']:
         if token['name'] != 'iBGT':

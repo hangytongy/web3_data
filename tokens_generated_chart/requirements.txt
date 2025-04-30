@@ -1,0 +1,6 @@
+requests
+pandas
+matplotlib
+python-dotenv
+seaborn
+dune-client

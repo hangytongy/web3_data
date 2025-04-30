@@ -1,0 +1,11 @@
+{
+    "apps": [
+      {
+        "name": "no_tokens_generated",
+        "script": "venv/bin/python3",
+        "cron_restart": "0 10 * * *",
+        "autorestart": false,
+        "args": "main.py"
+      }
+    ]
+  }

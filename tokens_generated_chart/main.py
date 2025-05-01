@@ -63,4 +63,5 @@ for symbol in symbols:
     plt.savefig(f"no_of_tokens_{symbol}.png")
     time.sleep(2)
 
+    print(f"{symbol} send photo to telegram")
     send_photo_telegram(f"no_of_tokens_{symbol}.png",f"No of tokens generated vs {symbol}")

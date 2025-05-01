@@ -14,6 +14,8 @@ load_dotenv()
 sns.set()
 
 def get_price_history(symbol,interval,end_time,start_time):
+
+    print(f"Get price history for {symbol}")
     # Binance API endpoint for historical klines
     url = "https://api.binance.com/api/v3/klines"
     
@@ -60,6 +62,8 @@ def get_price_history(symbol,interval,end_time,start_time):
         # Convert 'Close' to numeric
         df['Close'] = pd.to_numeric(df['Close'])
 
+        print("price history data collection done")
+
         return df
     else:
         print(f"Error: {response.status_code} - {response.text}")
@@ -67,6 +71,8 @@ def get_price_history(symbol,interval,end_time,start_time):
     
     
 def get_tokens_created(api_key,query_id):
+
+    print("get no of tokens created via Dunes")
 
     dune = DuneClient(
         api_key=api_key,
@@ -77,6 +83,8 @@ def get_tokens_created(api_key,query_id):
     query = QueryBase(query_id=query_id)
     
     query_result = dune.run_query_dataframe(query=query)
+
+    print("query completed")
     
     return query_result
 

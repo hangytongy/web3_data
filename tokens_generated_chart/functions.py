@@ -70,15 +70,19 @@ def get_price_history(symbol,interval,end_time,start_time):
         return None
     
     
-def get_tokens_created(api_key,query_id):
+def get_tokens_created(api_key: str, query_id: int):
 
-    print("get no of tokens created via Dunes")
+    print("initiate Dune client")
 
     dune = DuneClient(
         api_key=api_key,
         base_url="https://api.dune.com",
         request_timeout=600
     )
+
+    print("Dune client initiated")
+
+    print("get no of tokens created via Dunes")
     
     query = QueryBase(query_id=query_id)
     

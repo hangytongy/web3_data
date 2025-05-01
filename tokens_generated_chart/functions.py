@@ -86,7 +86,8 @@ def get_tokens_created(api_key: str, query_id: int):
     
     query = QueryBase(query_id=query_id)
     
-    query_result = dune.run_query_dataframe(query=query)
+    #query_result = dune.run_query_dataframe(query=query)
+    query_result = dune.get_latest_result_dataframe(query_id)
 
     print("query completed")
     

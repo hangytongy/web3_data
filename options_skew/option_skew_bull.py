@@ -12,7 +12,7 @@ load_dotenv()
 # === CONFIGURATION ===
 URL = "https://velo.xyz/api/m/skew?coin=BTC&range=604800000&resolution=1%20hour"
 THRESHOLD = 0.15        # change to 0.15 (15%)
-SLEEP_INTERVAL = 30 * 60  # 30 minutes
+SLEEP_INTERVAL = 120 * 60  # 2 hours
 RESET_SLEEP = 6 * 60 * 60  # 6 hours
 SAVE_PATH = "btc_1w_skew.png"
 
@@ -101,6 +101,7 @@ def send_telegram_alert(fig_path,caption, chat_id = os.getenv('CHAT_ID')):
 def main():
     global options_skew
     print("📈 Starting BTC skew monitor...")
+    count = 0
 
     while True:
         data = fetch_skew_data(URL)
@@ -138,6 +139,11 @@ def main():
         else:
             print("📉 Skew did not increase — keeping previous value only.")
             options_skew = [options_skew[-1]]
+            count += 1
+            #if no new data in 1 week, restart
+            if count >= (604800/SLEEP_INTERVAL):
+                count = 0
+                options_skew.clear()
 
         time.sleep(SLEEP_INTERVAL)
 

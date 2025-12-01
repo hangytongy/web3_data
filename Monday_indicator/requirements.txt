@@ -1,0 +1,6 @@
+pandas
+ccxt
+nest-asyncio
+python-dotenv
+requests
+

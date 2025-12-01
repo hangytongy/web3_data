@@ -1,0 +1,12 @@
+{
+    "apps": [
+      {
+        "name": "Monday_signal",
+        "script": "venv/bin/python3",
+        "args": "main.py",
+        "cwd": "/root/web3_data/Monday_indicator",
+        "autorestart": true,
+        "time": true
+      }
+    ]
+  }

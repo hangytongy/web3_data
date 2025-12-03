@@ -13,9 +13,12 @@ load_dotenv()
 
 
 # CONFIG
-TIMEFRAME = os.getenv("TIMEFRAM")
+TIMEFRAME = os.getenv("TIMEFRAME")
 SLEEP_INTERVAL = int(os.getenv("SLEEP_INTERVAL"))
 CONCURRENCY_LIMIT = int(os.getenv("CONCURRENCY_LIMIT"))
+
+
+print(TIMEFRAME, SLEEP_INTERVAL, CONCURRENCY_LIMIT)
 
 def format_signal_message(sig):
     """
@@ -57,6 +60,46 @@ async def fetch_ohlcv(exchange, symbol, timeframe=TIMEFRAME, limit=100):
         return None
 
 
+async def print_btc_monday_high_low(exchange):
+    symbol = "BTC/USDT:USDT"
+
+    # Get last Monday (UTC)
+    today = datetime.utcnow().date()
+    days_since_monday = (today.weekday() - 0) % 7
+    last_monday = today - timedelta(days=days_since_monday)
+
+    next_day = last_monday + timedelta(days=1)
+
+    try:
+        df = await exchange.fetch_ohlcv(symbol, "1h", since=None, limit=500)
+    except Exception as e:
+        print("Error loading BTC Monday OHLC:", e)
+        return
+
+    if not df:
+        print("No BTC data available.")
+        return
+
+    import pandas as pd
+    df = pd.DataFrame(df, columns=['timestamp','open','high','low','close','volume'])
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms', utc=True)
+
+    # Filter only Monday
+    monday_df = df[df['timestamp'].dt.date == last_monday]
+
+    if monday_df.empty:
+        print(f"BTC Monday data missing for: {last_monday}")
+        return
+
+    monday_high = monday_df["high"].max()
+    monday_low = monday_df["low"].min()
+
+    print(f"\n=== BTC Monday High/Low ({last_monday}) ===")
+    print(f"  Monday High : {monday_high}")
+    print(f"  Monday Low  : {monday_low}")
+    print("=========================================\n")
+
+
 async def analyze_symbol(exchange, symbol, semaphore, seen_signals, current_week_start):
     async with semaphore:
         df = await fetch_ohlcv(exchange, symbol)
@@ -70,11 +113,13 @@ async def analyze_symbol(exchange, symbol, semaphore, seen_signals, current_week
     # filter only this week's data
     df = df[df['week_start'] == current_week_start]
     if df.empty:
+        print(f"{symbol} df empty")
         return []
 
     # Monday high & low
     monday = df[df['day_of_week'] == 0]
     if monday.empty:
+        print(f"{symbol} monday empty")
         return []
 
     monday_high = monday['high'].max()
@@ -150,6 +195,8 @@ async def main_loop():
                 current_week_start = new_week_start
 
             print(f"\n--- Scan started {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC ---")
+
+            await print_btc_monday_high_low(exchange)
 
             tasks = [
                 analyze_symbol(exchange, symbol, semaphore, seen_signals, current_week_start)

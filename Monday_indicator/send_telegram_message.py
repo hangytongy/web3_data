@@ -2,6 +2,9 @@ from dotenv import load_dotenv
 import requests
 import os
 import html
+import time
+import aiohttp
+import asyncio
 
 load_dotenv()
 
@@ -10,7 +13,7 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 MAX_MESSAGE_LENGTH = 4096  # Telegram's hard limit
 
-def send_telegram_message(text):
+async def send_telegram_message(text):
 
     text = html.escape(text)
     
@@ -20,27 +23,30 @@ def send_telegram_message(text):
     # Split into chunks
     chunks = [text[i:i + MAX_MESSAGE_LENGTH] for i in range(0, len(text), MAX_MESSAGE_LENGTH)]
 
-    for chunk in chunks:
-        if "_" in chat_id:
-            ids = chat_id.split("_")
-            payload = {
+    async with aiohttp.ClientSession() as session:
+
+        for chunk in chunks:
+            if "_" in chat_id:
+                ids = chat_id.split("_")
+                payload = {
                 "chat_id": ids[0],
                 "message_thread_id": ids[1],
                 "text": chunk,
                 "parse_mode": "HTML",
                 "disable_web_page_preview": True
-            }
-        else:
-            payload = {
+                }
+            else:
+                payload = {
                 "chat_id": chat_id,
                 "text": chunk,
                 "parse_mode": "HTML",
                 "disable_web_page_preview": True
-            }
+                }
+            async with session.post(url, json=payload) as resp:
 
-        response = requests.post(url, json=payload)
-
-        if response.status_code != 200:
-            print(f"⚠️ Failed to send chunk ({response.status_code}): {response.text}")
-        else:
-            print("✅ Chunk sent successfully")
+                if resp.status != 200:
+                    text_resp = await resp.text()
+                    print(f"⚠️ Failed to send chunk ({respo.status}): {text_resp}")
+                else:
+                    print("✅ Chunk sent successfully")
+            await asyncio.sleep(1)

@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "cmeOI",
+      "script": "env/bin/python",
+      "cron_restart": "0 3 * * *",
+      "autorestart": false,
+      "args" : "app.py"
+    }]
+}

@@ -2,26 +2,12 @@ import requests
 import os
 import random
 
-def return_proxies():
-    proxies = [
-        "chanhouyong:Welcome@prc@sg.proxymesh.com:31280",
-        "chanhouyong:Welcome@prc@jp.proxymesh.com:31280",
-    ]
-
-    proxy = random.choice(proxies)
-
-    return proxy
 
 
 def send_photo_telegram(photo, caption, chat_id=""):
     #url = f"https://api.telegram.org/bot{os.getenv('TELEGRAM_BOT_TOKEN')}/sendPhoto"
     token = ""
     url = f"https://api.telegram.org/bot{token}/sendPhoto"
-    proxy_choice = return_proxies()
-    proxy = {
-        "http": f"http://{proxy_choice}",
-        "https": f"http://{proxy_choice}",
-    }
 
     photo = open(photo, "rb")
 
@@ -60,6 +46,7 @@ def send_photo_telegram(photo, caption, chat_id=""):
 
     print(body)
 
-    response = requests.post(url, data=body, files=files, proxies=proxy)
+    response = requests.post(url, data=body, files=files)
+
 
     return response.text

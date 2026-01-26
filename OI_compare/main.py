@@ -14,7 +14,7 @@ def init_client():
     api_key = '4a2a1de7c0d440c983bf5b0e7f1fc366'
     # new velo client
     client = velo.client(api_key)
-    return client 
+    return client
 
 def get_tickers():
     client = init_client()
@@ -22,7 +22,7 @@ def get_tickers():
     velo_coins = pd.unique(velo_coins)
 
     return velo_coins.tolist()
-    
+
 def get_oi(symbol):
     btc_oi_url = f"https://velo.xyz/api/m/oi?coin={symbol}&range=2592000000&resolution=24%20hours"
 
@@ -51,7 +51,7 @@ def query_cme(token,all_alts_oi):
     df.index = df.index.date
     cond1 = df.index >= all_alts_oi.index.min()
     df = df[cond1]
-    
+
     return df
 
 def merge_data(oi,cme):
@@ -67,19 +67,19 @@ def plot_data(all_alts_oi,btc,eth, cme):
     plt.plot(all_alts_oi.index, all_alts_oi['alts_sum'], marker='o', color='b', label='Alts oi')
     plt.plot(btc.index, btc['oi'], marker='o', color='orange', label='BTC oi')
     plt.plot(eth.index, eth['oi'], marker='o', color='green', label='ETH oi')
-    
-    
+
+
     # Adding labels and title
     plt.xlabel('Date')
     plt.ylabel('OI')
     plt.title('OI crypto')
-    
+
     # Optional: Rotate x-axis labels for better readability
     plt.xticks(rotation=45)
-    
+
     # Display the legend
     plt.legend()
-    
+
     # Show the plot
     plt.tight_layout()  # Adjust layout for better spacing
 
@@ -97,7 +97,7 @@ def main():
 
     #get OI for all alt tickers
     alts_oi = []
-    
+
     for ticker in tickers:
         df = get_oi(ticker)
         alts_oi.append(df)
@@ -106,10 +106,10 @@ def main():
     #combine all alts to get overall OI for alts only
     for i, df in enumerate(alts_oi):
         alts_oi[i] = df.rename(columns={col: f"{col}_df{i+1}" for col in df.columns})
-    
+
     # Merge all dataframes using reduce
     merged_df = reduce(lambda left, right: pd.merge(left, right, left_index=True, right_index=True, how='outer'), alts_oi)
-    
+
     # Sum the OI columns to get overall OI
     merged_df['alts_sum'] = merged_df.filter(like='oi').sum(axis=1)
     all_alts_oi = merged_df.drop(columns=merged_df.filter(like='oi').columns)
@@ -129,10 +129,10 @@ def main():
     #plot all data w/o CME
     plot_data(all_alts_oi,btc_oi,eth_oi,False)
     send_photo_telegram('oi_plot.png',"OI BTC vs ETH vs Alts w/o CME")
-    
+
     #plot all data w CME
-    plot_data(all_alts_oi,btc_oi_merge,eth_oi_merge,True)
-    send_photo_telegram('oi_plot_cme.png',"OI BTC vs ETH vs Alts w CME")
+    #plot_data(all_alts_oi,btc_oi_merge,eth_oi_merge,True)
+    #send_photo_telegram('oi_plot_cme.png',"OI BTC vs ETH vs Alts w CME")
 
 if __name__ == "__main__":
     main()
